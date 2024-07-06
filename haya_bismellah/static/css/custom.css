@@ -254,3 +254,25 @@ footer {
     box-sizing: border-box;
     margin-bottom: 20px; 
 }
+
+/* style for no restaurant */
+
+.no-restaurants {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.no-restaurants h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.no-restaurants p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.no-restaurants .btn {
+    font-size: 1em;
+    padding: 10px 20px;
+}
