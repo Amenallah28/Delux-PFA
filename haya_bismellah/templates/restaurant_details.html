@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ restaurant.name }} Details{% endblock %}
+
+{% block content %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/details.css') }}">
+
+  <div class="restaurant-details">
+    <h1>{{ restaurant.name }}</h1>
+    {% if restaurant.image_url %}
+      <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}" width="400" class="restaurant-image">
+    {% endif %}
+
+    <div class="restaurant-info">
+      <p><strong>Address:</strong> {{ restaurant.location.address1 }}, {{ restaurant.location.city }}, {{ restaurant.location.country }}</p>
+      <p><strong>Rating:</strong>
+        {% for i in range(restaurant.rating | int) %}
+          <span class="star">&#x2605;</span>
+        {% endfor %}
+        {% for i in range(5 - (restaurant.rating | int)) %}
+          <span class="star empty">&#x2606;</span>
+        {% endfor %}
+        ({{ restaurant.rating | default('N/A') }})
+      </p>
+      {% if restaurant.get('hours') %}
+        <p><strong>Open Now:</strong> {{ restaurant.hours.is_open_now | default('N/A') }}</p>
+      {% else %}
+        <p><strong>Open Now:</strong> N/A</p>
+      {% endif %}
+    </div>
+
+    <div class="restaurant-categories">
+      <h2>Categories</h2>
+      <ul>
+        {% for category in restaurant.categories %}
+          <li>{{ category.title }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="restaurant-transactions">
+      <h2>Transactions</h2>
+      <ul>
+        {% for transaction in restaurant.transactions %}
+          <li>{{ transaction }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="restaurant-menu">
+      <h2>Menu</h2>
+      {% if restaurant.get('attributes') and restaurant.attributes.get('menu_url') %}
+        <a href="{{ restaurant.attributes.menu_url }}" target="_blank">View Menu</a>
+      {% else %}
+        <p>No menu available.</p>
+      {% endif %}
+    </div>
+
+    <div class="restaurant-contact">
+      <h2>Contact</h2>
+      {% if restaurant.get('phone') %}
+        <p><strong>Phone:</strong> {{ restaurant.phone | default('N/A') }}</p>
+      {% else %}
+        <p><strong>Phone:</strong> N/A</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,110 @@
+/* Global styles */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  h1, h2 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    margin-bottom: 20px;
+  }
+  
+  strong {
+    font-weight: bold;
+    color: #666;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #337ab7;
+  }
+  
+  a:hover {
+    color: #23527c;
+  }
+  
+  /* Restaurant details styles */
+  
+  .restaurant-details {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .restaurant-image {
+    width: 400px;
+    height: 250px;
+    margin: 20px auto;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  
+  .restaurant-info {
+    margin-top: 20px;
+  }
+  
+  .restaurant-info p {
+    margin-bottom: 10px;
+  }
+  
+  .restaurant-categories,
+  .restaurant-transactions {
+    margin-top: 20px;
+  }
+  
+  .restaurant-categories ul,
+  .restaurant-transactions ul {
+    margin-top: 10px;
+  }
+  
+  .restaurant-menu {
+    margin-top: 20px;
+  }
+  
+  .restaurant-menu a {
+    font-size: 16px;
+    font-weight: bold;
+    color: #337ab7;
+  }
+  
+  .restaurant-contact {
+    margin-top: 20px;
+  }
+  
+  .restaurant-contact p {
+    margin-bottom: 10px;
+  }
+  
+  .restaurant-contact a {
+    font-size: 16px;
+    font-weight: bold;
+    color: #337ab7;
+  }
+
+  .star {
+    color: #ffd700; 
+    font-size: 16px;
+  }
+  
+  .star.empty {
+    color: #ccc; 
+  }
+  

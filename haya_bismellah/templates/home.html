@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="home-container">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="home-image">
+        </div>
+        <h1>Welcome, {{ user.first_name }}!</h1>
+        <div class="search-form">
+            <form action="/search_location" method="GET">
+                <div class="form-group">
+                    <label for="location">Where are you travelling to?</label>
+                    <input type="text" class="form-control search-input" id="location" name="location" placeholder="Enter city and country" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary search-button">Search</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

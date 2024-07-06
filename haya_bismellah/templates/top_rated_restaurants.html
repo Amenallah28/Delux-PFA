@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Top Rated Restaurants{% endblock %}
+
+{% block content %}
+
+<div class="search-form">
+    <form action="/search_cuisine" method="GET">
+        <input type="hidden" name="latitude" value="{{ latitude }}">
+        <input type="hidden" name="longitude" value="{{ longitude }}">
+        <div class="form-group">
+            <label for="cuisine">What do you want to eat?</label>
+            <input type="text" class="form-control search-input" id="cuisine" name="cuisine" placeholder="e.g., burgers, sushi" required>
+        </div>
+        <button type="submit" class="btn btn-primary search-button">Search</button>
+    </form>
+</div>
+
+<h1>Top Rated Restaurants in the Area</h1>
+<div class="restaurant-grid">
+    {% for restaurant in top_rated_restaurants %}
+    <div class="restaurant-card">
+        <h2><a href="{{ url_for('routes.restaurant_details', restaurant_id=restaurant.id) }}">{{ restaurant.name }}</a></h2>
+        <p>{{ restaurant.location.address1 }}, {{ restaurant.location.city }}, {{ restaurant.location.country }}</p>
+        {% if restaurant.image_url %}
+            <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}" width="200">
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="pagination-controls">
+    {% if page > 1 %}
+        <a href="{{ url_for('routes.search_location', location=location, page=page-1) }}" class="prev-page">Previous</a>
+    {% endif %}
+    <span>Page {{ page }}</span>
+    {% if top_rated_restaurants|length == 10 %}
+        <a href="{{ url_for('routes.search_location', location=location, page=page+1) }}" class="next-page">Next</a>
+    {% endif %}
+</div>
+
+{% endblock %}

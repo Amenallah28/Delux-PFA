@@ -1,0 +1,102 @@
+import requests
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user
+from datetime import datetime
+
+routes = Blueprint('routes', __name__)
+
+@routes.route('/')
+@login_required 
+def home():
+    return render_template("home.html", user=current_user, year=datetime.now().year)
+
+""" OpenCage API key"""
+opencage_api_key = '1e26944be7134917a051751f5c260a48'
+
+""" Yelp API key """
+yelp_api_key = 'EAeWyZLc1w2aiK0cLVq56EiGzs_GkJWgET9apO4TvJBtUjiR6fMpycjhajSLxEejdkOOq2765B29XRCt6f97IJqbUwrRM0Ogsp_D0ETTcI1agDG2jVJjrZhfH0BoZnYx'
+
+
+@routes.route('/restaurant/<restaurant_id>', methods=['GET'])
+@login_required
+def restaurant_details(restaurant_id):
+    """ Get restaurant details using Yelp API """
+    details_url = f'https://api.yelp.com/v3/businesses/{restaurant_id}'
+    headers = {
+        'Authorization': f'Bearer {yelp_api_key}'
+    }
+    response = requests.get(details_url, headers=headers)
+    restaurant_details = response.json()
+
+    if 'error' in restaurant_details:
+        flash('Could not fetch restaurant details', category='error')
+        return redirect(url_for('routes.home'))
+
+    return render_template('restaurant_details.html', restaurant=restaurant_details)
+
+
+@routes.route('/search_location', methods=['GET'])
+@login_required
+def search_location():
+    location = request.args.get('location')
+    page = int(request.args.get('page', 1))
+    limit = 10
+    offset = (page - 1) * limit
+
+    if not location:
+        flash('Location is required', category='error')
+        return redirect(url_for('routes.home'))
+
+    """ Get coordinates using OpenCage API """
+    geocode_url = f'https://api.opencagedata.com/geocode/v1/json?q={location}&key={opencage_api_key}'
+    response = requests.get(geocode_url)
+    data = response.json()
+
+    if not data['results']:
+        flash('Could not find location', category='error')
+        return redirect(url_for('routes.home'))
+
+    latitude = data['results'][0]['geometry']['lat']
+    longitude = data['results'][0]['geometry']['lng']
+
+    """ Get top-rated restaurants using Yelp API """
+    search_url = f'https://api.yelp.com/v3/businesses/search?latitude={latitude}&longitude={longitude}&categories=restaurants&sort_by=rating&limit={limit}&offset={offset}'
+    headers = {
+        'Authorization': f'Bearer {yelp_api_key}'
+    }
+    response = requests.get(search_url, headers=headers)
+    top_rated_restaurants = response.json()
+
+    return render_template('top_rated_restaurants.html', 
+                           top_rated_restaurants=top_rated_restaurants['businesses'], 
+                           latitude=latitude, longitude=longitude, 
+                           location=location, page=page)
+
+
+
+@routes.route('/search_cuisine', methods=['GET'])
+@login_required
+def search_cuisine():
+    latitude = request.args.get('latitude')
+    longitude = request.args.get('longitude')
+    cuisine = request.args.get('cuisine')
+    page = int(request.args.get('page', 1))
+    limit = 10
+    offset = (page - 1) * limit
+
+    if not latitude or not longitude or not cuisine:
+        flash('Latitude, longitude, and cuisine are required', category='error')
+        return redirect(url_for('routes.home'))
+
+    """ Get restaurants by cuisine using Yelp API """
+    search_url = f'https://api.yelp.com/v3/businesses/search?latitude={latitude}&longitude={longitude}&categories={cuisine}&limit={limit}&offset={offset}'
+    headers = {
+        'Authorization': f'Bearer {yelp_api_key}'
+    }
+    response = requests.get(search_url, headers=headers)
+    restaurants_by_cuisine = response.json()
+
+    return render_template('restaurants_by_cuisine.html', 
+                           restaurants_by_cuisine=restaurants_by_cuisine['businesses'], 
+                           cuisine=cuisine, page=page, latitude=latitude, longitude=longitude)
+
