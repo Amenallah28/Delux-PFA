@@ -67,6 +67,9 @@ def search_location():
     response = requests.get(search_url, headers=headers)
     top_rated_restaurants = response.json()
 
+    if not top_rated_restaurants.get('businesses'):
+        return render_template('no_restaurants.html', location=location)
+
     return render_template('top_rated_restaurants.html', 
                            top_rated_restaurants=top_rated_restaurants['businesses'], 
                            latitude=latitude, longitude=longitude, 
@@ -95,6 +98,9 @@ def search_cuisine():
     }
     response = requests.get(search_url, headers=headers)
     restaurants_by_cuisine = response.json()
+
+    if not restaurants_by_cuisine.get('businesses'):
+        return render_template('no_restaurants.html', cuisine=cuisine)
 
     return render_template('restaurants_by_cuisine.html', 
                            restaurants_by_cuisine=restaurants_by_cuisine['businesses'], 
