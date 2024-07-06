@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}No Restaurants Found{% endblock %}
+
+{% block content %}
+    <div class="home-container">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="home-image">
+        </div>
+        <h1>No Restaurants Found</h1>
+        <p>Oops, there's no information right now. We are working on it.</p>
+        {% if location %}
+            <p>Location: {{ location }}</p>
+        {% elif cuisine %}
+            <p>Cuisine: {{ cuisine }}</p>
+        {% endif %}
+        <a href="{{ url_for('routes.home') }}" class="btn btn-primary">Go back to Home</a>
+    </div>
+{% endblock %}
