@@ -65,8 +65,7 @@
       {% endif %}
     </div>
   </div>
-
-<!-- Write a Review form -->
+ 
 <h2>Write a Review</h2>
 <form method="POST" action="">
     {{ form.hidden_tag() }}
@@ -81,7 +80,6 @@
     </div>
 </form>
 
-<!-- List of reviews -->
 <h2>Reviews</h2>
 <ul class="list-unstyled">
     {% for review in reviews %}
@@ -100,3 +98,4 @@
     {% endfor %}
 </ul>
 {% endblock %}
+
