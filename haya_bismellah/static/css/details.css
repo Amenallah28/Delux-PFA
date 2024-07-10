@@ -107,4 +107,92 @@ body {
   .star.empty {
     color: #ccc; 
   }
-  
+/* Review form styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  width: 250px;
+}
+
+.btn-primary {
+  background-color: #337ab7;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #23527c;
+}
+
+/* Review list styles */
+.list-unstyled {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.review {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.review-author {
+  font-size: 14px;
+  color: #666;
+}
+
+.review-comment {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Change submit button color to black */
+input[type="submit"] {
+  background-color: #000; /* Black color */
+  border: none;
+  color: #fff; /* White text color */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.delete-button {
+  background-color: #000!important; /* Black color */
+  border: none;
+  color: #fff; /* White text color */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
