@@ -65,4 +65,38 @@
       {% endif %}
     </div>
   </div>
+
+<!-- Write a Review form -->
+<h2>Write a Review</h2>
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.rating.label }} {{ form.rating(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.comment.label }} {{ form.comment(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+
+<!-- List of reviews -->
+<h2>Reviews</h2>
+<ul class="list-unstyled">
+    {% for review in reviews %}
+    <li class="review">
+        <div class="review-header">
+            <strong>{{ review.rating }} stars</strong>
+            <span class="review-author">by {{ review.user.username }}</span>
+        </div>
+        <p class="review-comment">{{ review.comment }}</p>
+        {% if review.user_id == current_user.id %}
+        <form method="POST" action="{{ url_for('routes.delete_review', id=review.id) }}" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
