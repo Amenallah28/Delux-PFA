@@ -2,6 +2,9 @@ import requests
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from datetime import datetime
+from .models import Review
+from .forms import ReviewForm
+from .models import db, Review 
 
 routes = Blueprint('routes', __name__)
 
@@ -17,7 +20,7 @@ opencage_api_key = '1e26944be7134917a051751f5c260a48'
 yelp_api_key = 'EAeWyZLc1w2aiK0cLVq56EiGzs_GkJWgET9apO4TvJBtUjiR6fMpycjhajSLxEejdkOOq2765B29XRCt6f97IJqbUwrRM0Ogsp_D0ETTcI1agDG2jVJjrZhfH0BoZnYx'
 
 
-@routes.route('/restaurant/<restaurant_id>', methods=['GET'])
+@routes.route('/restaurant/<restaurant_id>', methods=['GET', 'POST'])
 @login_required
 def restaurant_details(restaurant_id):
     """ Get restaurant details using Yelp API """
@@ -32,8 +35,23 @@ def restaurant_details(restaurant_id):
         flash('Could not fetch restaurant details', category='error')
         return redirect(url_for('routes.home'))
 
-    return render_template('restaurant_details.html', restaurant=restaurant_details)
+    # Handle review submission
+    form = ReviewForm()
+    if form.validate_on_submit():
+        new_review = Review(
+            user_id=current_user.id,
+            restaurant_id=restaurant_id,
+            rating=form.rating.data,
+            comment=form.comment.data
+        )
+        db.session.add(new_review)
+        db.session.commit()
+        flash('Review added successfully!', category='success')
+        return redirect(url_for('routes.restaurant_details', restaurant_id=restaurant_id))
 
+    reviews = Review.query.filter_by(restaurant_id=restaurant_id).all()
+
+    return render_template('restaurant_details.html', restaurant=restaurant_details, form=form, reviews=reviews)
 
 @routes.route('/search_location', methods=['GET'])
 @login_required
@@ -106,3 +124,16 @@ def search_cuisine():
                            restaurants_by_cuisine=restaurants_by_cuisine['businesses'], 
                            cuisine=cuisine, page=page, latitude=latitude, longitude=longitude)
 
+
+@routes.route('/review/<int:id>/delete', methods=['POST'])
+@login_required
+def delete_review(id):
+    review = Review.query.get_or_404(id)
+    if review.user_id != current_user.id:
+        flash('You do not have permission to delete this review.', category='error')
+        return redirect(url_for('routes.restaurant_details', restaurant_id=review.restaurant_id))
+
+    db.session.delete(review)
+    db.session.commit()
+    flash('Review deleted successfully!', category='success')
+    return redirect(url_for('routes.restaurant_details', restaurant_id=review.restaurant_id))
