@@ -106,7 +106,7 @@ html, body {
   }
   
   .home-image {
-    width: 200px; 
+    width: 350px; 
     height: auto;
     margin: 0 auto;
     max-width: 100%; 
@@ -125,3 +125,4 @@ html, body {
       width: 20px; /* reduce the image width even further on very small screens */
     }
   }
+  
