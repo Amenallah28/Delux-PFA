@@ -17,7 +17,7 @@ def home():
 opencage_api_key = '1e26944be7134917a051751f5c260a48'
 
 """ Yelp API key """
-yelp_api_key = 'EAeWyZLc1w2aiK0cLVq56EiGzs_GkJWgET9apO4TvJBtUjiR6fMpycjhajSLxEejdkOOq2765B29XRCt6f97IJqbUwrRM0Ogsp_D0ETTcI1agDG2jVJjrZhfH0BoZnYx'
+yelp_api_key = 'sdcMabW8XLnBAXxP3NTEWUASNEuxpioz-qg0s6iSXn9MIilzMYS-fkMN5pVrgFhCfGK6suC1JWEAaWc6ZpVK80NRJqSEFM-zqGhshn89Q-HTVw6TY36DlN-znKyTZnYx'
 
 
 @routes.route('/restaurant/<restaurant_id>', methods=['GET', 'POST'])
