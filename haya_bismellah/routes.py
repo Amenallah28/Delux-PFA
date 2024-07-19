@@ -6,11 +6,13 @@ from .models import Review
 from .forms import ReviewForm
 from .models import db, Review 
 
+# Define a Blueprint for routing
 routes = Blueprint('routes', __name__)
 
 @routes.route('/')
 @login_required 
 def home():
+    # Render the home page template
     return render_template("home.html", user=current_user, year=datetime.now().year)
 
 """ OpenCage API key"""
@@ -18,7 +20,6 @@ opencage_api_key = '1e26944be7134917a051751f5c260a48'
 
 """ Yelp API key """
 yelp_api_key = 'sdcMabW8XLnBAXxP3NTEWUASNEuxpioz-qg0s6iSXn9MIilzMYS-fkMN5pVrgFhCfGK6suC1JWEAaWc6ZpVK80NRJqSEFM-zqGhshn89Q-HTVw6TY36DlN-znKyTZnYx'
-
 
 @routes.route('/restaurant/<restaurant_id>', methods=['GET', 'POST'])
 @login_required
@@ -31,6 +32,7 @@ def restaurant_details(restaurant_id):
     response = requests.get(details_url, headers=headers)
     restaurant_details = response.json()
 
+    # Check for errors in the API response
     if 'error' in restaurant_details:
         flash('Could not fetch restaurant details', category='error')
         return redirect(url_for('routes.home'))
@@ -44,23 +46,28 @@ def restaurant_details(restaurant_id):
             rating=form.rating.data,
             comment=form.comment.data
         )
+        # Add the new review to the database
         db.session.add(new_review)
         db.session.commit()
         flash('Review added successfully!', category='success')
         return redirect(url_for('routes.restaurant_details', restaurant_id=restaurant_id))
 
+    # Retrieve all reviews for the restaurant
     reviews = Review.query.filter_by(restaurant_id=restaurant_id).all()
 
+    # Render the restaurant details template with reviews
     return render_template('restaurant_details.html', restaurant=restaurant_details, form=form, reviews=reviews)
 
 @routes.route('/search_location', methods=['GET'])
 @login_required
 def search_location():
+    # Get the location and pagination parameters from the request
     location = request.args.get('location')
     page = int(request.args.get('page', 1))
     limit = 10
     offset = (page - 1) * limit
 
+    # Check if the location parameter is provided
     if not location:
         flash('Location is required', category='error')
         return redirect(url_for('routes.home'))
@@ -70,6 +77,7 @@ def search_location():
     response = requests.get(geocode_url)
     data = response.json()
 
+    # Check if the geocoding API returned results
     if not data['results']:
         flash('Could not find location', category='error')
         return redirect(url_for('routes.home'))
@@ -85,19 +93,20 @@ def search_location():
     response = requests.get(search_url, headers=headers)
     top_rated_restaurants = response.json()
 
+    # Check if there are no businesses returned by the API
     if not top_rated_restaurants.get('businesses'):
         return render_template('no_restaurants.html', location=location)
 
+    # Render the top-rated restaurants template with search results
     return render_template('top_rated_restaurants.html', 
                            top_rated_restaurants=top_rated_restaurants['businesses'], 
                            latitude=latitude, longitude=longitude, 
                            location=location, page=page)
 
-
-
 @routes.route('/search_cuisine', methods=['GET'])
 @login_required
 def search_cuisine():
+    # Get the latitude, longitude, and cuisine parameters from the request
     latitude = request.args.get('latitude')
     longitude = request.args.get('longitude')
     cuisine = request.args.get('cuisine')
@@ -105,6 +114,7 @@ def search_cuisine():
     limit = 10
     offset = (page - 1) * limit
 
+    # Check if the required parameters are provided
     if not latitude or not longitude or not cuisine:
         flash('Latitude, longitude, and cuisine are required', category='error')
         return redirect(url_for('routes.home'))
@@ -117,22 +127,25 @@ def search_cuisine():
     response = requests.get(search_url, headers=headers)
     restaurants_by_cuisine = response.json()
 
+    # Check if there are no businesses returned by the API
     if not restaurants_by_cuisine.get('businesses'):
         return render_template('no_restaurants.html', cuisine=cuisine)
 
+    # Render the restaurants by cuisine template with search results
     return render_template('restaurants_by_cuisine.html', 
                            restaurants_by_cuisine=restaurants_by_cuisine['businesses'], 
                            cuisine=cuisine, page=page, latitude=latitude, longitude=longitude)
 
-
 @routes.route('/review/<int:id>/delete', methods=['POST'])
 @login_required
 def delete_review(id):
+    # Retrieve the review to be deleted
     review = Review.query.get_or_404(id)
     if review.user_id != current_user.id:
         flash('You do not have permission to delete this review.', category='error')
         return redirect(url_for('routes.restaurant_details', restaurant_id=review.restaurant_id))
 
+    # Delete the review from the database
     db.session.delete(review)
     db.session.commit()
     flash('Review deleted successfully!', category='success')
