@@ -4,12 +4,16 @@ from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 
+# Define the User model for managing user accounts
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     first_name = db.Column(db.String(150), nullable=False)
     reviews = db.relationship('Review')
+
+# Define the Review model for managing user reviews of restaurants
 
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
